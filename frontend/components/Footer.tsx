@@ -19,18 +19,15 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
               <li><a href="#pricing" className="hover:text-white transition-colors">Preise</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Changelog</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Roadmap</a></li>
             </ul>
           </div>
 
           <div>
             <h4 className="text-white font-semibold mb-4">Rechtliches</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Impressum</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Datenschutz</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">AGB</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cookie-Einstellungen</a></li>
+              <li><a href="/impressum" className="hover:text-white transition-colors">Impressum</a></li>
+              <li><a href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</a></li>
+              <li><a href="/agb" className="hover:text-white transition-colors">AGB</a></li>
             </ul>
           </div>
 
@@ -40,11 +37,6 @@ export default function Footer() {
               <li>
                 <a href="mailto:info@campingpilot.de" className="hover:text-white transition-colors">
                   info@campingpilot.de
-                </a>
-              </li>
-              <li>
-                <a href="tel:+49123456789" className="hover:text-white transition-colors">
-                  +49 123 456 789
                 </a>
               </li>
             </ul>

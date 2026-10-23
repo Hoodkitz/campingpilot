@@ -7,15 +7,14 @@ export default function CTA() {
         </h2>
         <p className="text-lg text-primary-100 mb-8 max-w-2xl mx-auto">
           Starte heute mit Campingpilot und verwalte deinen Campingplatz
-          effizienter als je zuvor. 14 Tage kostenlos testen, keine Kreditkarte
-          erforderlich.
+          effizienter als je zuvor.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#pricing"
             className="bg-white text-primary-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary-50 transition-all shadow-lg"
           >
-            Jetzt kostenlos starten
+            Preise ansehen
           </a>
           <a
             href="mailto:info@campingpilot.de"

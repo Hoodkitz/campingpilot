@@ -1,70 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2023-10-16',
-});
+const PLANS = ['Starter', 'Professional', 'Business'] as const;
+const INTERVALS = ['month', 'year'] as const;
 
-// Price IDs for Stripe Test Mode
-const PRICE_IDS: Record<string, Record<string, string>> = {
-  Starter: {
-    month: 'price_1PStarterMonth', // Replace with actual Stripe Price ID
-    year: 'price_1PStarterYear',   // Replace with actual Stripe Price ID
-  },
-  Professional: {
-    month: 'price_1PProMonth',     // Replace with actual Stripe Price ID
-    year: 'price_1PProYear',       // Replace with actual Stripe Price ID
-  },
-  Business: {
-    month: 'price_1PBusinessMonth', // Replace with actual Stripe Price ID
-    year: 'price_1PBusinessYear',   // Replace with actual Stripe Price ID
-  },
-};
+function getPriceId(plan: string, interval: string): string | undefined {
+  return process.env[`STRIPE_PRICE_${plan.toUpperCase()}_${interval.toUpperCase()}`];
+}
+
+function getAllowedPriceIds(): Set<string> {
+  return new Set(
+    (process.env.STRIPE_ALLOWED_PRICE_IDS || '')
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { plan, interval } = body;
+    const { plan, interval } = await request.json();
 
-    if (!plan || !interval) {
-      return NextResponse.json(
-        { error: 'Plan und Intervall sind erforderlich' },
-        { status: 400 }
-      );
+    if (!(PLANS as readonly string[]).includes(plan) || !(INTERVALS as readonly string[]).includes(interval)) {
+      return NextResponse.json({ error: 'Ungültiger Plan oder Intervall' }, { status: 400 });
     }
 
-    const priceId = PRICE_IDS[plan]?.[interval];
+    const priceId = getPriceId(plan, interval);
+    const allowed = getAllowedPriceIds();
 
-    if (!priceId) {
-      return NextResponse.json(
-        { error: 'Ungültiger Plan oder Intervall' },
-        { status: 400 }
-      );
+    if (!process.env.STRIPE_SECRET_KEY || !priceId || allowed.size === 0) {
+      console.error('Stripe nicht konfiguriert: STRIPE_SECRET_KEY, STRIPE_PRICE_<PLAN>_<INTERVAL> und STRIPE_ALLOWED_PRICE_IDS setzen');
+      return NextResponse.json({ error: 'Checkout ist nicht konfiguriert' }, { status: 503 });
     }
+
+    if (!allowed.has(priceId)) {
+      return NextResponse.json({ error: 'Ungültige priceId' }, { status: 400 });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
+    const origin = request.nextUrl.origin;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       mode: 'subscription',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/pricing`,
-      metadata: {
-        plan,
-        interval,
-      },
+      success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/#pricing`,
+      metadata: { plan, interval },
     });
 
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error('Checkout error:', error);
-    return NextResponse.json(
-      { error: 'Fehler beim Erstellen der Checkout-Session' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Fehler beim Erstellen der Checkout-Session' }, { status: 500 });
   }
 }

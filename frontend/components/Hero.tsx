@@ -20,7 +20,7 @@ export default function Hero() {
               href="#pricing"
               className="bg-primary-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-primary-700 transition-all shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/30 hover:-translate-y-0.5"
             >
-              14 Tage kostenlos testen
+              Preise ansehen
             </a>
             <a
               href="#features"

@@ -16,7 +16,7 @@ const plans = [
       'Basis-Statistiken',
       '1 Benutzer',
     ],
-    cta: 'Kostenlos testen',
+    cta: 'Plan wählen',
     popular: false,
   },
   {
@@ -33,7 +33,7 @@ const plans = [
       '5 Benutzer',
       'Prioritäts-Support',
     ],
-    cta: 'Kostenlos testen',
+    cta: 'Plan wählen',
     popular: true,
   },
   {
@@ -86,8 +86,7 @@ export default function Pricing() {
             Einfache, transparente Preise
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
-            Wähle den Plan, der zu deinem Campingplatz passt. Alle Pläne
-            inklusive 14-tägigem kostenlosen Test.
+            Wähle den Plan, der zu deinem Campingplatz passt. Alle Pläne mit monatlicher oder jährlicher Abrechnung.
           </p>
 
           {/* Billing Toggle */}
@@ -176,7 +175,7 @@ export default function Pricing() {
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-8">
-          Alle Preise inkl. MwSt. · 14 Tage kostenlos testen · Jederzeit kündbar
+          Preise und Kündigung gemäß AGB
         </p>
       </div>
     </section>
